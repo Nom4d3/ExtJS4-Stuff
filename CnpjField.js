@@ -22,6 +22,29 @@ Ext.define('Ext.ux.CnpjField', {
 
       me.callParent();
    },
+
+   setValue: function(value) {
+      var me = this;
+
+      me.callParent(arguments);
+
+      if (me.inputEl) {
+         me.formatValue(me, value);
+      }
+
+      return me;
+   },
+
+   formatValue: function(me, value) {
+      var v = value || '',
+         txt = me.inputEl.dom,
+         raw = v.replace(/[^0-9]/gi, "");
+
+      if (raw.length == 0) return;
+
+      txt.value = raw.substr(0, 2) + '.' + raw.substr(2, 3) + '.' + raw.substr(5, 3) + '/' + raw.substr(8, 4) + '-' + raw.substr(12, 2);
+   },
+
    verificaCNPJ: function(a) {
       var me = this;
       if (a == "") return true;
@@ -44,6 +67,7 @@ Ext.define('Ext.ux.CnpjField', {
          }
       }
    },
+
    testaCNPJ: function(a, d) {
       var b = 0;
       var e = 2;

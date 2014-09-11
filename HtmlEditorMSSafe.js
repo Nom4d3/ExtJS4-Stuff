@@ -33,7 +33,7 @@ Ext.define('Ext.ux.HtmlEditorMSSafe', {
       var me = this;
       Ext.defer(function() {
          me.cleanWordPaste();
-      }, 300);
+      }, 1000);
    },
 
    cleanWordPaste: function() {
@@ -44,7 +44,7 @@ Ext.define('Ext.ux.HtmlEditorMSSafe', {
       me.setValue(me.fixWordPaste(value));
       me.resumeEvents();
    },
-
+   // enableSourceEdit: true,
    fixWordPaste: function(wordPaste) { // /style=\"[^\"]*\"/g
       var removals = [/&nbsp;/ig, /[\r\n]/g, /<(xml|style)[^>]*>.*?<\/\1>/ig, /<\/?(meta|object|span)[^>]*>/ig,
          /<\/?[A-Z0-9]*:[A-Z]*[^>]*>/ig, /(lang|class|type|href|name|title|id|clear)=\"[^\"]*\"/ig, /<![\[-].*?-*>/g,
@@ -54,12 +54,14 @@ Ext.define('Ext.ux.HtmlEditorMSSafe', {
          /<\/?o:p[^>]*>/g, /<\/?v:[^>]*>/g, /<\/?o:[^>]*>/g, /<\/?st1:[^>]*>/g, /lang=\"[^\"]*\"/g, /style=(\'\'|\"\")/ig, /style=\'[^\"]*\'/g,
          /lang=\'[^\"]*\'/g, /class=\"[^\"]*\"/g, /class=\'[^\"]*\'/g, /type=\"[^\"]*\"/g, /type=\'[^\"]*\'/g, /href=\'#[^\"]*\'/g,
          /href=\"#[^\"]*\"/g, /name=\"[^\"]*\"/g, /name=\'[^\"]*\'/g, / clear=\"all\"/g, /id=\"[^\"]*\"/g, /title=\"[^\"]*\"/g,
-         /<span[^>]*>/g, /<\/?span[^>]*>/g, /class=/g];
+         /<span[^>]*>/g, /<\/?span[^>]*>/g, /class=/g, /<a[^>]*>/g, /<\/?a[^>]*>/g, /<img[^>]*>/g];
+      // "
 
       Ext.each(removals, function(s) {
-         wordPaste = wordPaste.replace(s, "");
+         wordPaste = wordPaste.replace(s, " ");
       });
 
+      wordPaste = wordPaste.replace(/<br[^>]*>/g, "<br>");
       wordPaste = wordPaste.replace(/<div[^>]*>/g, "<p>");
       wordPaste = wordPaste.replace(/<\/?div[^>]*>/g, "</p>");
       return wordPaste;

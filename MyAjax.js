@@ -6,17 +6,17 @@ Ext.define('Ext.ux.MyAjax', {
    disableCaching: false,
    method: 'POST',
    listeners: {
-      beforerequest: function(con, opt) {
+      'beforerequest': function(con, opt) {
          if (!Ext.isEmpty(opt.maskTarget)){
             opt.maskTarget.mask(opt.msg);
          }
       },
-      requestcomplete: function(con, res, opt) {
+      'requestcomplete': function(con, res, opt) {
          if (!Ext.isEmpty(opt.maskTarget)){
             opt.maskTarget.unmask();
          }
       },
-      requestexception: function(con, res, opt) {
+      'requestexception': function(con, res, opt) {
          if (!Ext.isEmpty(opt.maskTarget)){
             opt.maskTarget.unmask();
          }

@@ -4,7 +4,11 @@ Ext.define('Ext.ux.MonthPicker', {
    requires: ['Ext.picker.Month'],
    alternateClassName: ['Ext.form.MonthField', 'Ext.form.Month'],
    selectMonth: null,
-   width: 130,
+   width: 120,
+   editable: false,
+   submitFormat: 'Y-m',
+   format: 'M/Y',
+
    createPicker: function() {
       var me = this, format = Ext.String.format;
 
@@ -12,6 +16,7 @@ Ext.define('Ext.ux.MonthPicker', {
          pickerField: me,
          ownerCt: me.ownerCt,
          renderTo: document.body,
+         showButtons: false,
          floating: true,
          hidden: true,
          focusOnShow: true,
@@ -22,6 +27,7 @@ Ext.define('Ext.ux.MonthPicker', {
          disabledDays: me.disabledDays,
          disabledDaysText: me.disabledDaysText,
          format: me.format,
+         yearOffset: 4,
          showToday: me.showToday,
          startDay: me.startDay,
          minText: format(me.minText, me.formatDate(me.minValue)),
@@ -40,21 +46,16 @@ Ext.define('Ext.ux.MonthPicker', {
          }
       });
    },
-   onCancelClick: function() {
-      var me = this;
-   me.selectMonth = null;
-      me.collapse();
-   },
-   onOKClick: function() {
-      var me = this;
-      if (me.selectMonth) {
-         me.setValue(me.selectMonth);
-         me.fireEvent('select', me, me.selectMonth);
-      }
-      me.collapse();
-   },
+
    onSelect: function(m, d) {
       var me = this;
-      me.selectMonth = new Date(( d[0]+1 ) +'/1/'+d[1]);
+      me.value = new Date(( d[0]+1 ) +'/1/'+d[1]);
+      me.setValue(me.value);
+      me.collapse();
+      me.fireEvent('selectmonth', me, me.value);
+   },
+
+   getSubmitValue: function() {
+      return Ext.Date.format(this.value, this.submitFormat);
    }
 });

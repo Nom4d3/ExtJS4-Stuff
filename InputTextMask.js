@@ -39,6 +39,7 @@ Ext.define('Ext.ux.InputTextMask', {
          field.on('render', this.assignEl, this);
       }
 
+      field.addEvents('beforeBlur', field);
       field.addEvents('afterBlur', field);
       field.addEvents('afterMoveCursorToPosition', field);
       field.on('blur', this.removeValueWhenInvalid, this);
@@ -98,9 +99,11 @@ Ext.define('Ext.ux.InputTextMask', {
         this.field.inputEl.on('input', this.onInputOpera, this);
       }
    },
+
    onInput: function() {
       this.startTask(false);
    },
+
    onInputOpera: function() {
       if (!this.prevValueOpera) {
          this.startTask(false);
@@ -136,6 +139,7 @@ Ext.define('Ext.ux.InputTextMask', {
    },
 
    removeValueWhenInvalid: function() {
+      this.field.fireEvent('beforeBlur', this.field);
       if(this.clearWhenInvalid && this.inputTextElement.value.indexOf('_') > -1) {
          this.inputTextElement.value = '';
       }
@@ -237,6 +241,7 @@ Ext.define('Ext.ux.InputTextMask', {
       if ((keycode.unicode == 67 || keycode.unicode == 99) && e.ctrlKey) {//Ctrl+c, let's the browser manage it!
          return;
       }
+      if (this.field.readOnly) return;
       if ((keycode.unicode == 88 || keycode.unicode == 120) && e.ctrlKey) {//Ctrl+x, manage paste
          this.startTask();
          return;
@@ -319,7 +324,7 @@ Ext.define('Ext.ux.InputTextMask', {
 
    getCursorPosition: function() {
       var s, e, r;
-      if (this.inputTextElement.createTextRange) {
+      if (this.inputTextElement.createTextRange && document.selection) {
          r = document.selection.createRange().duplicate();
          r.moveEnd('character', this.inputTextElement.value.length);
          if(r.text === ''){
@@ -339,7 +344,7 @@ Ext.define('Ext.ux.InputTextMask', {
 
    moveCursorToPosition: function(keycode, cursorPosition) {
       var p = (!keycode || (keycode && keycode.isBackspace )) ? cursorPosition.start : cursorPosition.start + 1;
-      if (this.inputTextElement.createTextRange) {
+      if (this.inputTextElement.createTextRange && document.selection) {
          cursorPosition.range.move('character', p);
          cursorPosition.range.select();
       } else {
